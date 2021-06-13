@@ -1,6 +1,7 @@
 from sqlalchemy import Column,Table,INTEGER,CHAR,VARCHAR
 from sqlalchemy.sql.expression import null
 from ..data import meta
+from pydantic import BaseModel
 
 table=Table(
     'user',meta,
@@ -20,3 +21,9 @@ table=Table(
         nullable=False,
     ),
 )
+
+class UserBase(BaseModel):
+	uid:str
+
+class UserInDB(UserBase):
+	hash_pwd:str
