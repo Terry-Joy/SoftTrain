@@ -2,15 +2,20 @@ from sqlalchemy import Column,Table,INTEGER,CHAR,VARCHAR
 from sqlalchemy.sql.expression import null
 from ..data import meta
 
-table=Table(
+from pydantic import BaseModel
+
+student_table=Table(
     'student',meta,
     Column(
-        'S_ID',CHAR(60),
+        's_id',CHAR(60),
         primary_key=True,
-        autoincrement=True,
         nullable=False,
         unique=True,
     ),
+	Column(
+		'sname',CHAR(60),
+		nullable=False,
+	),
     Column(
         'sex',CHAR(50),
         nullable=False,
@@ -24,7 +29,7 @@ table=Table(
         nullable=False,
     ),
     Column(
-        'class',int,
+        'now_class',int,
         nullable=True
     ),
     Column(
@@ -32,16 +37,28 @@ table=Table(
         nullable=False
     ),
     Column(
-        'phone_number',CHAR(50),
+        'phone_number',int,
         nullable=False,
         unique=True,
     ),
     Column(
-        'bel_B_name',CHAR(50),
+        'bel_b_name',CHAR(50),
         nullable=True
     ),
     Column(
-        'bel_D_number',INTEGER,
+        'bel_d_number',INTEGER,
         nullable=True
     ),
 )
+
+class StudentInDB(BaseModel):
+	s_id:str 
+	sname:str 
+	sex:str 
+	school:str 
+	grade:int 
+	now_class:int 
+	live_status:str
+	phone_number:int
+	bel_b_name:str
+	bel_d_number:int

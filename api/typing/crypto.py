@@ -31,7 +31,7 @@ class jwtToken(BaseModel):
 	def get_newjwt(cls,user:UserInDB)->str:
 		now_time=datetime.utcnow()
 		obj=cls(
-			sub=user.uid,
+			sub=user.username,
 			exp=now_time+timedelta(minutes=30),
 			iat=now_time
 		)
