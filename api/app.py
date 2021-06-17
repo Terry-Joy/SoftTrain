@@ -7,7 +7,7 @@ app=FastAPI(title="soft_homework",)
 
 @app.get('/')
 async def root():
-    return {'msg':'hello world'}
+    return {'msg':'success'}
 
 modules={}
 
@@ -19,4 +19,4 @@ for name in ['route']:
         name=moduleInfo.name
         modules[name]=importlib.import_module(name)
 
-print(modules)
+# print(modules)

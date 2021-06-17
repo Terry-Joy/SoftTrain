@@ -45,6 +45,6 @@ class jwtToken(BaseModel):
 			jwt.decode(
 				token,
 				SECRET_KEY,
-				algorithm=['HS256'],
+				algorithms=['HS256'],
 			)
 		)

@@ -29,7 +29,7 @@ student_table=Table(
         nullable=False,
     ),
     Column(
-        'now_class',int,
+        'now_class',INTEGER,
         nullable=True
     ),
     Column(
@@ -37,7 +37,7 @@ student_table=Table(
         nullable=False
     ),
     Column(
-        'phone_number',int,
+        'phone_number',CHAR(50),
         nullable=False,
         unique=True,
     ),
@@ -46,7 +46,7 @@ student_table=Table(
         nullable=True
     ),
     Column(
-        'bel_d_number',INTEGER,
+        'bel_d_number',CHAR(50),
         nullable=True
     ),
 )
@@ -59,6 +59,6 @@ class StudentInDB(BaseModel):
 	grade:int 
 	now_class:int 
 	live_status:str
-	phone_number:int
+	phone_number:str
 	bel_b_name:str
 	bel_d_number:int
