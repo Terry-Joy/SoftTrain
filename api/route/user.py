@@ -77,7 +77,11 @@ def Create_Student(sid:str)->StudentInDB:
 		bel_b_name="",
 		bel_d_number=create_bel_d_number(),
 	)
-	obj.bel_b_name=create_bel_b_name(1,obj.sex,obj.school)
+	if obj.live_status=='yes':
+		obj.bel_b_name=create_bel_b_name(1,obj.sex,obj.school)
+	else:
+		obj.bel_b_name=""
+		obj.bel_d_number=""
 	return obj
 	
 
@@ -151,7 +155,6 @@ async def dorm_get_student_information(
 	else: 
 		sel=student_table.select()
 		if usertype==UserType.dorm_administrator:
-			
 			obj=await db.fetch_one(dorm_administrator_table.select(dorm_administrator_table.c.dorm_administrator_id==user.username))
 			obj=Dorm_AdministratorInDB.parse_obj(obj)
 			if obj.bel_b_id=="all":
@@ -166,29 +169,27 @@ async def dorm_get_student_information(
 							detail="You don't have authorization to get this information"
 						)
 				else:
-					print('caonima')
 					sel=sel.where(student_table.c.bel_b_name==obj.bel_b_id)
 
 		if s_id:
 			sel=sel.where(student_table.c.s_id==s_id)
-			return await db.fetch_one(sel)
-		else:
-			if sname:
-				sel=sel.where(student_table.c.sname==sname)
-			if sex:
-				sel=sel.where(student_table.c.sex==sex)
-			if school:
-				sel=sel.where(student_table.c.school==school)
-			if grade:
-				sel=sel.where(student_table.c.grade==grade)
-			if now_class:
-				sel=sel.where(student_table.c.now_class==now_class)
-			if phone_number:
-				sel=sel.where(student_table.c.phone_number==phone_number)
-			if bel_b_name:
-				sel=sel.where(student_table.c.bel_b_name==bel_b_name)
-			if bel_d_number:
-				sel=sel.where(student_table.c.bel_d_number==bel_d_number)
-		return await db.fetch_all(sel)
+		if sname:
+			sel=sel.where(student_table.c.sname==sname)
+		if sex:
+			sel=sel.where(student_table.c.sex==sex)	
+		if school:
+			sel=sel.where(student_table.c.school==school)
+		if grade:				
+			sel=sel.where(student_table.c.grade==grade)
+		if now_class:
+			sel=sel.where(student_table.c.now_class==now_class)
+		if phone_number:
+			sel=sel.where(student_table.c.phone_number==phone_number)
+		if bel_b_name:
+			sel=sel.where(student_table.c.bel_b_name==bel_b_name)
+		if bel_d_number:
+			sel=sel.where(student_table.c.bel_d_number==bel_d_number)
+		obj=await db.fetch_all(sel)
+		return obj
 
 

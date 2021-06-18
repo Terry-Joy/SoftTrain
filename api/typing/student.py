@@ -61,4 +61,4 @@ class StudentInDB(BaseModel):
 	live_status:str
 	phone_number:str
 	bel_b_name:str
-	bel_d_number:int
+	bel_d_number:str

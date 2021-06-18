@@ -4,6 +4,11 @@ from ..data import db
 from ..typing.create_data import create_bel_d_number,create_id
 
 
+# async def update_
+
+
+
+
 @app.post("/dormitory/create_dormitory")
 async def create_dormitory(building_id:int,room_name:str):
 	obj=DormitoryRoomInDB(
