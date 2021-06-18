@@ -1,8 +1,9 @@
-from sqlalchemy import Column,Table,INTEGER,CHAR,VARCHAR
+from sqlalchemy import Column,Table,INTEGER,CHAR,VARCHAR,ForeignKey,Time
 from sqlalchemy.sql.expression import null
 from ..data import meta
-
+from typing import Optional
 from pydantic import BaseModel
+from enum import Enum
 
 move_in_table=Table(
 	'move_in_information',meta,
@@ -12,18 +13,43 @@ move_in_table=Table(
         unique=True,
 	),
 	Column('s_id',CHAR(60),
-		nullable=False
-	),
-	Column(''
-	),
-	Column('m_status',CHAR(60),
+		ForeignKey('student.s_id'),
 		nullable=False,
 	),
-	Column('m_b_name',CHAR(60),
+	Column('move_in_time',CHAR(60),
+		nullable=False,
+	),
+	Column('move_in_status',CHAR(60),
+		nullable=False,
+	),
+	Column('move_in_b_name',CHAR(60),
 		nullable=True,
 	),
-	Column('m_d_number',CHAR(60),
-
+	Column('move_in_d_number',CHAR(60),
+		nullable=True,
 	),
 )
 
+
+class MoveInType(str,Enum):
+	waiting="待审批"
+	success="已分配"
+	failed="分配失败"
+
+
+class MoveInDB(BaseModel):
+	m_id:str
+	s_id:str
+	move_in_time:str
+	move_in_status:MoveInType
+	move_in_b_name:Optional[str]
+	move_in_d_number:Optional[str] 
+
+
+class MoveCreate(BaseModel):
+	m_id:str
+	s_id:str
+	move_in_time:str
+	move_in_status:MoveInType
+	move_in_b_name:Optional[str]
+	move_in_d_number:Optional[str] 

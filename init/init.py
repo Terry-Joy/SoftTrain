@@ -1,6 +1,6 @@
 import requests
 import random
-
+from datetime import date,datetime
 
 def create_id(num:int)->str:
 	data=[]
@@ -28,3 +28,4 @@ if __name__ == "__main__":
     times = 100
     for i in range(times):
         create_user()
+	# print(datetime.today())
