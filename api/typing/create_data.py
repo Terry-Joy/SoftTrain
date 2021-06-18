@@ -100,6 +100,20 @@ def create_bel_b_name(flag:int,sex:Optional[str]=None,bel_school:Optional[str]=N
 			return pos[base+1] 
 
 
+def create_building(building:int):
+	sex=""
+	if building%2==0:
+		sex="female"
+	else:
+		sex="male"
+	school=['机械与汽车工程学院','建筑学院','土木与交通学院','电子与信息学院','材料科学与工程学院','化学与化工学院','轻工科学与工程学院','食品科学与工程学院','数学学院',
+	'物理与光电学院','经济与贸易学院','自动化科学与工程学院','计算机科学与工程学院','电力学院','生物科学与工程学院','环境与能源学院','软件学院','工商管理学院','公共管理学院','外国语学院','法学院',
+	'新闻与传播学院','艺术学院','体育学院','设计学院','医学院']
+	str='C'+f"{building}"
+	a=(int)(building/2)
+	return {"building_id":str,"sex":sex,"school":school[a]}
+
+
 def create_bel_d_number()->str:
 	pos=[]
 	for i in range(1,60):
@@ -109,3 +123,14 @@ def create_bel_d_number()->str:
 			pos[i]='0'+pos[i]
 	first=''.join(random.sample('1234567',1))
 	return first+random.choice(pos)
+
+
+def create_id(num:int=12)->str:
+	data=[]
+	for i in range(10):
+		data.append(f'{i}')	
+	id = ""
+	for i in range(num):
+		id = id + random.choice(data)
+	return id
+

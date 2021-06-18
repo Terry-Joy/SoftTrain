@@ -1,5 +1,6 @@
+from starlette.status import HTTP_401_UNAUTHORIZED
 from api.route.test import create
-from typing import Optional
+from typing import Optional,List
 
 from fastapi import HTTPException,status,Depends,Response
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
@@ -7,8 +8,8 @@ from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from ..app import app
 from ..data import db
-from sqlalchemy import select
-from ..typing.user import table,UserInDB,UserCreate
+from sqlalchemy import select,and_
+from ..typing.user import table,UserInDB,UserCreate,UserType
 from ..typing.crypto import Token,jwtToken
 
 from ..typing.student import student_table,StudentInDB
@@ -17,6 +18,8 @@ from ..typing.create_data import create_bel_b_name,create_bel_d_number,create_no
 
 from ..depends.user import get_login_user
 from ..typing.dorm_administrator import dorm_administrator_table,Dorm_AdministratorInDB
+
+
 
 
 pwd_context=CryptContext(schemes=["bcrypt"],deprecated="auto")
@@ -97,31 +100,95 @@ async def user_create(
 			status_code=status.HTTP_400_BAD_REQUEST,
 			detail="Username repeat",
 		)
+
 	obj=UserInDB(
 		username=user.user_name,
 		hash_pwd=pwd_context.hash(user.password),
-		usertype=user.user_type,
+		usertype=user.user_type.value,
 	)
-	print(obj)
+
 	await db.execute(table.insert(obj.dict()))
-	if user.user_type=='学生':
+	if user.user_type==UserType.student:
 		stu_obj=Create_Student(user.user_name)
 		await db.execute(student_table.insert(stu_obj.dict()))
 		return {'msg':'success create user'}
-	elif user.user_type=='宿管':
+	elif user.user_type==UserType.dorm_administrator:
 		d_ad_obj=Create_Dorm_Admin(user.user_name)
 		await db.execute(dorm_administrator_table.insert(d_ad_obj.dict()))
-		return {'msg':'success'}
+		return {'msg':'success create dormadmin user'}
 
 
 @app.post("/user/get_current_user")
 async def get_current_user(user:UserInDB=Depends(get_login_user)):
 	usertype=user.usertype
-	if usertype=='学生':
+	if usertype==UserType.student:
 		stu_obj=await db.fetch_one(student_table.select(student_table.c.s_id==user.username))
 		return stu_obj		
-	elif usertype=='宿管':
+	elif usertype==UserType.dorm_administrator:
 		admin_obj=await db.fetch_one(dorm_administrator_table.select(dorm_administrator_table.c.dorm_administrator_id==user.username))
 		return admin_obj
+
+
+@app.get("/user/dorm_get_student_information",response_model=List[StudentInDB])
+async def dorm_get_student_information(
+	s_id:Optional[str]=None,
+	sname:Optional[str]=None,
+	sex:Optional[str]=None,
+	school:Optional[str]=None,
+	grade:Optional[int]=None,
+	now_class:Optional[int]=None,
+	phone_number:Optional[str]=None,
+	bel_b_name:Optional[str]=None,
+	bel_d_number:Optional[str]=None,
+	user:UserInDB=Depends(get_login_user)
+)->List[StudentInDB]:
+	usertype=user.usertype
+	if usertype==UserType.student:
+		raise HTTPException(
+			status_code=HTTP_401_UNAUTHORIZED,
+			detail="You don't have authorization to get this information"
+		)
+	else: 
+		sel=student_table.select()
+		if usertype==UserType.dorm_administrator:
+			
+			obj=await db.fetch_one(dorm_administrator_table.select(dorm_administrator_table.c.dorm_administrator_id==user.username))
+			obj=Dorm_AdministratorInDB.parse_obj(obj)
+			if obj.bel_b_id=="all":
+				pass
+			else:
+				if bel_b_name:
+					if obj.bel_b_id==bel_b_name:
+						pass
+					else:
+						raise HTTPException(
+							status_code=HTTP_401_UNAUTHORIZED,
+							detail="You don't have authorization to get this information"
+						)
+				else:
+					print('caonima')
+					sel=sel.where(student_table.c.bel_b_name==obj.bel_b_id)
+
+		if s_id:
+			sel=sel.where(student_table.c.s_id==s_id)
+			return await db.fetch_one(sel)
+		else:
+			if sname:
+				sel=sel.where(student_table.c.sname==sname)
+			if sex:
+				sel=sel.where(student_table.c.sex==sex)
+			if school:
+				sel=sel.where(student_table.c.school==school)
+			if grade:
+				sel=sel.where(student_table.c.grade==grade)
+			if now_class:
+				sel=sel.where(student_table.c.now_class==now_class)
+			if phone_number:
+				sel=sel.where(student_table.c.phone_number==phone_number)
+			if bel_b_name:
+				sel=sel.where(student_table.c.bel_b_name==bel_b_name)
+			if bel_d_number:
+				sel=sel.where(student_table.c.bel_d_number==bel_d_number)
+		return await db.fetch_all(sel)
 
 

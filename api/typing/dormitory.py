@@ -11,7 +11,7 @@ dormitory_table=Table(
 	Column(
 		'room_id',CHAR(60),
 		primary_key=True,
-		nullable=True,
+		nullable=False,
 		unique=True,
 	),
 	Column(
@@ -21,10 +21,22 @@ dormitory_table=Table(
 	Column(
 		'Capcity',INTEGER,
 		nullable=False
+	),
+	Column(
+		'bel_b_name',CHAR(60),
+		nullable=False
 	)
 )
 
-class dormitory_room_table(BaseModel):
+class DormitoryRoomInDB(BaseModel):
 	room_id:str
 	room_name:str
-	Capcity:INTEGER
+	Capcity:int
+	bel_b_name:str
+
+
+class DormitoryRoomCreate(BaseModel):
+	room_id:str
+	room_name:str
+	Capcity:int
+	bel_b_name:str
