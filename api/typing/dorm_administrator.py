@@ -13,22 +13,22 @@ dorm_administrator_table=Table(
         nullable=False,
         unique=True,
     ),
-	Column(
-		'd_ad_name',CHAR(60),
-		nullable=False,
-	),
+    Column(
+        'd_ad_name',CHAR(60),
+        nullable=False,
+    ),
     Column(
         'sex',CHAR(50),
         nullable=False,
     ),
-	Column(
-		'bel_b_id',CHAR(60),
-		nullable=True,
-	)
+    Column(
+        'bel_b_id',CHAR(60),
+        nullable=True,
+    )
 )
 
 class Dorm_AdministratorInDB(BaseModel):
-	dorm_administrator_id:str
-	d_ad_name:str
-	sex:str
-	bel_b_id:str
+    dorm_administrator_id:str
+    d_ad_name:str
+    sex:str
+    bel_b_id:str

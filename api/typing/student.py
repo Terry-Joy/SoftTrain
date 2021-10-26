@@ -12,10 +12,10 @@ student_table=Table(
         nullable=False,
         unique=True,
     ),
-	Column(
-		'sname',CHAR(60),
-		nullable=False,
-	),
+    Column(
+        'sname',CHAR(60),
+        nullable=False,
+    ),
     Column(
         'sex',CHAR(50),
         nullable=False,
@@ -52,13 +52,13 @@ student_table=Table(
 )
 
 class StudentInDB(BaseModel):
-	s_id:str 
-	sname:str 
-	sex:str 
-	school:str 
-	grade:int 
-	now_class:int 
-	live_status:str
-	phone_number:str
-	bel_b_name:str
-	bel_d_number:str
+    s_id:str 
+    sname:str 
+    sex:str 
+    school:str 
+    grade:int 
+    now_class:int 
+    live_status:str
+    phone_number:str
+    bel_b_name:str
+    bel_d_number:str
